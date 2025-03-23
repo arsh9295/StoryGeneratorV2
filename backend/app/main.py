@@ -1,10 +1,21 @@
 from fastapi import FastAPI
-from app.routers import example_router  # Import your routers here
+from fastapi.middleware.cors import CORSMiddleware
+from app.routers import story_router, user_router
 
 app = FastAPI()
 
+# Configure CORS
+app.add_middleware(
+    CORSMiddleware,
+    allow_origins=["http://localhost:3000"],  # React frontend URL
+    allow_credentials=True,
+    allow_methods=["*"],
+    allow_headers=["*"],
+)
+
 # Include routers
-app.include_router(example_router.router)  # Replace with your actual router names
+app.include_router(story_router.router)
+app.include_router(user_router.router)
 
 @app.get("/")
 def read_root():
