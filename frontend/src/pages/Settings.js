@@ -1,4 +1,4 @@
-import React, { useState } from 'react';
+import React, { useState, useEffect } from 'react';
 import Layout from '../components/Layout';
 
 const Settings = () => {
@@ -10,14 +10,25 @@ const Settings = () => {
         gdrivePath: ''
     });
 
+    // Load settings when component mounts
+    useEffect(() => {
+        const savedSettings = localStorage.getItem('settings');
+        if (savedSettings) {
+            setSettings(JSON.parse(savedSettings));
+        }
+    }, []);
+
+    // Save settings whenever they change
+    useEffect(() => {
+        localStorage.setItem('settings', JSON.stringify(settings));
+    }, [settings]);
+
     const handleChange = (e) => {
         const newSettings = {
             ...settings,
             [e.target.name]: e.target.value
         };
         setSettings(newSettings);
-        // Save to localStorage whenever settings change
-        localStorage.setItem('settings', JSON.stringify(newSettings));
     };
 
     const handleBrowse = async (pathType) => {
