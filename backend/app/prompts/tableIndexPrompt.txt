@@ -1,0 +1,8 @@
+Generate a structured table of contents for a novel in {language}\
+with around {chapter[storyLength]} chapters. The novel follows the {storyType} genre. Each chapter should have\
+a compelling title and a brief description summarizing its main events or themes.\
+The titles should be engaging and hint at key plot points while maintaining suspense and excitement.\
+Ensure the chapters flow logically, gradually building tension and developing the story.\
+Return the result as a dictionary where keys are chapter numbers (as integers), and values are\
+dictionaries with 'title' and 'description' keys. The output should be properly formatted as a JSON-like structure.\
+Also generate name of novel as first element of dictionary with key as 'novel_name' and value as name of novel.

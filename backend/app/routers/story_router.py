@@ -19,6 +19,8 @@ logger = logging.getLogger(__name__)
 today_date = datetime.today()
 formatted_date = today_date.strftime("%d_%m_%y")
 
+promptFilePath = Path(__file__).parent.parent / 'prompts' 
+
 class SecretKeyRequest(BaseModel):
     secret_key: str
 
@@ -71,14 +73,11 @@ async def generate_story(request: StoryRequest):
         file_path = storyOutputPath / "stories" / formatted_date / language / storyType
         chapter = {"short": 5, "medium": 10, "long": 20, "very long": 30}
 
-        tableIndexPrompt = f"Generate a structured table of contents for a novel in {language}\
-            with around {chapter[storyLength]} chapters. The novel follows the {storyType} genre. Each chapter should have\
-            a compelling title and a brief description summarizing its main events or themes.\
-            The titles should be engaging and hint at key plot points while maintaining suspense and excitement.\
-            Ensure the chapters flow logically, gradually building tension and developing the story.\
-            Return the result as a dictionary where keys are chapter numbers (as integers), and values are\
-            dictionaries with 'title' and 'description' keys. The output should be properly formatted as a JSON-like structure.\
-            Also generate name of novel as first element of dictionary with key as 'novel_name' and value as name of novel."
+        tableIndexPromptFilePath = promptFilePath / "tableIndexPrompt.txt"
+        with open(tableIndexPromptFilePath, 'r') as file:
+            content = file.read()
+        formatted_content = eval(f"f'''{content}'''")
+        tableIndexPrompt = formatted_content
 
 
         if "gpt" in request.model:
@@ -113,7 +112,11 @@ async def generate_story(request: StoryRequest):
 
             # Generate Brief Description
             description_file = write_to_doc.create_story_folder(file_path / story_name / "description.docx")
-            description_Prompt = f"Generate a brief detailed description for the following story: \n {generate_index}"
+            descriptionPromptFilePath = promptFilePath / "descriptionPrompt.txt"
+            with open(descriptionPromptFilePath, 'r') as file:
+                content = file.read()
+            formatted_content = eval(f"f'''{content}'''")
+            description_Prompt = formatted_content            
             generate_description = gemini_generator.generate_story(description_Prompt, geminiApiKey, model)
             # print(f"Generating description for {story_name}... {generate_description}")
             if generate_description:
@@ -123,17 +126,11 @@ async def generate_story(request: StoryRequest):
             for key, value in generate_index.items():
                     if key != 'novel_name':  # Skip the novel name entry
                         if isinstance(value, dict) and 'title' in value:
-                            storyPrompt = f"Generate a {storyType} story chapter based on the following details:\
-                                - The story is set in a {language} speaking country.\
-                                - Table of Contents: {generate_index}\
-                                - Chapter Title: {value['title']}\
-                                - Chapter Description: {value['description']}\
-                                - Story Context: This chapter is part of a larger {storyType} novel. The atmosphere should be eerie, suspenseful, and immersive. Maintain consistency with previous chapters while gradually building tension.\
-                                - Writing Style: Dark, intense, and atmospheric, with vivid descriptions and {storyType} elements.\
-                                - Key Elements to Include: [Specify if any particular scene, character action, or twist is required]\
-                                - Tone & Mood: [Creepy, suspenseful, terrifying, etc.]\
-                                - Length: [full chapter]\
-                                - Story language will be {language} language only so write in that language."
+                            storyPromptFilePath = promptFilePath / "storyPrompt.txt"
+                            with open(storyPromptFilePath, 'r') as file:
+                                content = file.read()
+                            formatted_content = eval(f"f'''{content}'''")
+                            storyPrompt = formatted_content                               
                             print(f"Generating story for chapter {key}...")
 
                             generate_story = gemini_generator.generate_story(storyPrompt, geminiApiKey, model)
@@ -142,14 +139,22 @@ async def generate_story(request: StoryRequest):
                                 write_to_doc.write_to_docx(value['title'], generate_story, story_file)
 
                                 # Generate Image Prompt
-                                imagePrompt = f"Generate 4 image prompts for the below story: \n {generate_story}"
+                                imagePromptFilePath = promptFilePath / "imagePrompt.txt"
+                                with open(imagePromptFilePath, 'r') as file:
+                                    content = file.read()
+                                formatted_content = eval(f"f'''{content}'''")
+                                imagePrompt = formatted_content                                   
                                 prompt_file = write_to_doc.create_story_folder(file_path / story_name / "imageprompt.docx")
                                 generate_prompt = gemini_generator.generate_story(imagePrompt, geminiApiKey, model)
                                 if generate_prompt:
                                     write_to_doc.write_to_docx(value['title'], generate_prompt, prompt_file)
 
             # Generate Coming Up Next
-            comingUpNextPrompt = f"Generate 4 image prompts for the below story: \n {generate_story}"
+            comingUpNextPromptFilePath = promptFilePath / "comingUpNextPrompt.txt"
+            with open(comingUpNextPromptFilePath, 'r') as file:
+                content = file.read()
+            formatted_content = eval(f"f'''{content}'''")
+            comingUpNextPrompt = formatted_content                  
             comingUpNextPrompt_file = write_to_doc.create_story_folder(file_path / story_name / "comingupnext.docx")
             generate_comingUpNext = gemini_generator.generate_story(comingUpNextPrompt, geminiApiKey, model)
             if generate_comingUpNext:
