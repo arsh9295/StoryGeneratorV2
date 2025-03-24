@@ -1,1 +1,1 @@
-Generate 4 image prompts for the below story: \n {generate_story}
+Generate 60 image prompts for the below story, image prompt should follow the sequance of story and should describe story from start to end. Create realistic image prompt: \n {generate_story}
