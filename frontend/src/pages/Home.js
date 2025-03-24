@@ -42,6 +42,19 @@ const Home = () => {
             console.log('Request Data:', requestData); // Debugging line
             const response = await axios.post('http://localhost:8000/api/generate', requestData);
             setStory(response.data.story);
+            // Show success message with smooth fade
+            const successAlert = document.createElement('div');
+            successAlert.className = 'alert alert-success alert-dismissible fade show position-fixed top-0 start-50 translate-middle-x mt-3';
+            successAlert.style.zIndex = '1050';
+            successAlert.innerHTML = `
+                <strong>Success!</strong> Your story has been generated.
+                <button type="button" class="btn-close" data-bs-dismiss="alert" aria-label="Close"></button>
+            `;
+            document.body.appendChild(successAlert);
+            setTimeout(() => {
+                successAlert.classList.remove('show');
+                setTimeout(() => successAlert.remove(), 150);
+            }, 3000);
         } catch (err) {
             setError(err.message || 'Failed to generate story');
         } finally {
@@ -52,7 +65,7 @@ const Home = () => {
     return (
         <Layout>
             <div className="container">
-                <h1 className="text-center mt-4">Welcome to Story Generater</h1>
+                <h1 className="text-center mt-4">Welcome to Story Generator</h1>
                 <p className="text-center">Generate your amazing stories now!</p>
                 
                 <div className="d-flex align-items-center" style={{ minHeight: 'calc(100vh - 200px)' }}>
@@ -130,14 +143,32 @@ const Home = () => {
                                     onClick={handleGenerate}
                                     disabled={loading}
                                 >
-                                    {loading ? 'Generating...' : 'Generate'}
+                                    {loading ? (
+                                        <>
+                                            <span className="spinner-border spinner-border-sm me-2" role="status" aria-hidden="true"></span>
+                                            Crafting your story...
+                                        </>
+                                    ) : 'Generate'}
                                 </button>
                                 {error && (
                                     <div className="alert alert-danger mt-3">
                                         {error}
                                     </div>
                                 )}
-                                {story && (
+                                {loading && !error && (
+                                    <div className="text-center mt-4">
+                                        <div className="spinner-grow text-primary mx-1" role="status">
+                                            <span className="visually-hidden">Loading...</span>
+                                        </div>
+                                        <div className="spinner-grow text-primary mx-1" role="status" style={{animationDelay: "0.2s"}}>
+                                            <span className="visually-hidden">Loading...</span>
+                                        </div>
+                                        <div className="spinner-grow text-primary mx-1" role="status" style={{animationDelay: "0.4s"}}>
+                                            <span className="visually-hidden">Loading...</span>
+                                        </div>
+                                    </div>
+                                )}
+                                {story && !loading && (
                                     <div className="mt-4">
                                         <h3>Generated Story:</h3>
                                         <div className="card">
