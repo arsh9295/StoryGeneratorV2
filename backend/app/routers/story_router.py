@@ -20,6 +20,7 @@ today_date = datetime.today()
 formatted_date = today_date.strftime("%d_%m_%y")
 
 promptFilePath = Path(__file__).parent.parent / 'prompts' 
+chpaterDescriptionPath = Path(__file__).parent.parent / 'prompts' / 'chapterDescription'
 
 class SecretKeyRequest(BaseModel):
     secret_key: str
@@ -71,14 +72,18 @@ async def generate_story(request: StoryRequest):
         model = request.model
 
         file_path = storyOutputPath / "stories" / formatted_date / language / storyType
-        chapter = {"short": 5, "medium": 10, "long": 20, "very long": 30}
+        chapter = {"short": 4, "medium": 10, "long": 20, "very long": 30}
+
+        chapterDescriptionFile = chpaterDescriptionPath / f"{chapter[storyLength]}.txt"
+        with open(chapterDescriptionFile, 'r', encoding='utf-8') as file:
+            chapterDescriptionContent = file.read()
 
         tableIndexPromptFilePath = promptFilePath / "tableIndexPrompt.txt"
         with open(tableIndexPromptFilePath, 'r') as file:
             content = file.read()
-        formatted_content = eval(f"f'''{content}'''")
+        formatted_content = eval(f"f'''{content}\n{chapterDescriptionContent}'''")
         tableIndexPrompt = formatted_content
-
+        # print(f"Table index prompt: {tableIndexPrompt}")
 
         if "gpt" in request.model:
             # Use GPT integration
