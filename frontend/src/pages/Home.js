@@ -131,6 +131,7 @@ const Home = () => {
                                     <option value="gpt4">GPT-4</option>
                                     <option value="gemini-2.0-flash">Gemini 2.0 Flash</option>
                                     <option value="gemini-2.0-flash-lite">Gemini 2.0 Flash Lite</option>
+                                    <option value="gemini-2.0-flash-thinking-exp">Gemini 2.5 Flash Thinking</option>
                                     <option value="deepseek-chat">DeepSeek Chat</option>
                                     <option value="deepseek-reasoner">DeepSeek Reasoner</option>
                                 </select>

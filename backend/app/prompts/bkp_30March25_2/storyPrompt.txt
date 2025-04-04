@@ -1,0 +1,12 @@
+Generate a {storyType} story chapter based on the following details and Using the following table of contents and chapter descriptions:\
+- The story is set in a {language} speaking country.\
+- Table of Contents: {generate_index}\
+- Chapter Title: {value['title']}\
+- Chapter Description: {value['description']}\
+- Story Context: This chapter is part of a larger {storyType} novel. The atmosphere should be eerie, suspenseful, and immersive. Maintain consistency with previous chapters while gradually building tension.\
+- Writing Style: Dark, intense, and atmospheric, with vivid descriptions and {storyType} elements.\
+- Key Elements to Include: [Specify if any particular scene, character action, or twist is required]\
+- Tone & Mood: [Creepy, suspenseful, terrifying, etc.]\
+- Length: [full chapter]\
+- Story language will be {language} language only so write in that language.\
+- Ensure that each chapter follows the outline provided in its description and effectively builds upon the previous chapter. Maintain a consistent narrative voice and focus on developing the characters, advancing the plot according to the 'Key Story Components' outlined, and revealing any mysteries or exploring themes as indicated. Remember to incorporate the suggested 'Engagement Hooks' within each chapter. Pay close attention to the first chapter to ensure it establishes the core story, introduces the main characters, and immediately presents the central conflict or inciting incident."
